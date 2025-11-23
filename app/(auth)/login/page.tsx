@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { FileText } from "lucide-react"
+import { login } from "./actions"
 
 export default function LoginPage() {
   return (
@@ -22,11 +23,12 @@ export default function LoginPage() {
           </div>
         </CardHeader>
         <CardContent>
-          <form className="space-y-4">
+          <form action={login} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Correo Electrónico</Label>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="usuario@example.com"
                 required
@@ -36,6 +38,7 @@ export default function LoginPage() {
               <Label htmlFor="password">Contraseña</Label>
               <Input
                 id="password"
+                name="password"
                 type="password"
                 required
               />
@@ -45,9 +48,9 @@ export default function LoginPage() {
             </Button>
           </form>
           <div className="mt-4 text-center text-sm text-muted-foreground">
-            <p>Credenciales de prueba</p>
+            <p>Credenciales de prueba:</p>
             <p className="font-mono text-xs mt-1">
-              admin@example.com / password123
+              admin@glosas.com / admin123
             </p>
           </div>
         </CardContent>

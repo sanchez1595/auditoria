@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/sidebar"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { logout } from "@/app/(auth)/login/actions"
 
 const navigationItems = [
   {
@@ -117,7 +118,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarFooter>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton>
+            <SidebarMenuButton onClick={() => logout()}>
               <LogOut className="size-4" />
               <span>Cerrar Sesión</span>
             </SidebarMenuButton>
