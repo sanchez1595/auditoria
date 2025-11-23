@@ -1,7 +1,27 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { AlertCircle, Clock, DollarSign, FileText } from "lucide-react"
+import { createClient } from "@/lib/supabase/server"
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const supabase = await createClient()
+
+  // Obtener estadísticas de glosas
+  const { data: glosas, error } = await supabase
+    .from('glosas')
+    .select('*')
+
+  const totalGlosas = glosas?.length || 0
+  const valorTotal = glosas?.reduce((acc, g) => acc + parseFloat(g.valor_glosado || 0), 0) || 0
+
+  const glosasPorSemaforo = {
+    verde: glosas?.filter(g => g.semaforo === 'verde').length || 0,
+    amarillo: glosas?.filter(g => g.semaforo === 'amarillo').length || 0,
+    rojo: glosas?.filter(g => g.semaforo === 'rojo').length || 0,
+    negro: glosas?.filter(g => g.semaforo === 'negro').length || 0,
+  }
+
+  const glosasCriticas = glosasPorSemaforo.rojo + glosasPorSemaforo.negro
+
   return (
     <div className="space-y-8">
       <div>
@@ -20,9 +40,9 @@ export default function DashboardPage() {
             <FileText className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">577</div>
+            <div className="text-2xl font-bold">{totalGlosas}</div>
             <p className="text-xs text-muted-foreground">
-              Glosas pendientes de respuesta
+              Glosas en el sistema
             </p>
           </CardContent>
         </Card>
@@ -35,7 +55,9 @@ export default function DashboardPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">$354.5M</div>
+            <div className="text-2xl font-bold">
+              ${(valorTotal / 1000000).toFixed(1)}M
+            </div>
             <p className="text-xs text-muted-foreground">
               COP en glosas pendientes
             </p>
@@ -50,9 +72,9 @@ export default function DashboardPage() {
             <AlertCircle className="h-4 w-4 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-destructive">151</div>
+            <div className="text-2xl font-bold text-destructive">{glosasCriticas}</div>
             <p className="text-xs text-muted-foreground">
-              Vencen en 1-3 días
+              Rojas y negras (urgentes)
             </p>
           </CardContent>
         </Card>
@@ -85,25 +107,25 @@ export default function DashboardPage() {
             <div className="flex items-center">
               <div className="w-32 text-sm font-medium">Verde</div>
               <div className="flex-1 h-8 bg-green-500/20 rounded-md flex items-center px-3">
-                <span className="text-sm">120 glosas (21%)</span>
+                <span className="text-sm">{glosasPorSemaforo.verde} glosas ({totalGlosas > 0 ? ((glosasPorSemaforo.verde / totalGlosas) * 100).toFixed(0) : 0}%)</span>
               </div>
             </div>
             <div className="flex items-center">
               <div className="w-32 text-sm font-medium">Amarillo</div>
               <div className="flex-1 h-8 bg-yellow-500/20 rounded-md flex items-center px-3">
-                <span className="text-sm">189 glosas (33%)</span>
+                <span className="text-sm">{glosasPorSemaforo.amarillo} glosas ({totalGlosas > 0 ? ((glosasPorSemaforo.amarillo / totalGlosas) * 100).toFixed(0) : 0}%)</span>
               </div>
             </div>
             <div className="flex items-center">
               <div className="w-32 text-sm font-medium">Rojo</div>
               <div className="flex-1 h-8 bg-red-500/20 rounded-md flex items-center px-3">
-                <span className="text-sm">151 glosas (26%)</span>
+                <span className="text-sm">{glosasPorSemaforo.rojo} glosas ({totalGlosas > 0 ? ((glosasPorSemaforo.rojo / totalGlosas) * 100).toFixed(0) : 0}%)</span>
               </div>
             </div>
             <div className="flex items-center">
               <div className="w-32 text-sm font-medium">Negro</div>
               <div className="flex-1 h-8 bg-gray-900/20 rounded-md flex items-center px-3">
-                <span className="text-sm">117 glosas (20%)</span>
+                <span className="text-sm">{glosasPorSemaforo.negro} glosas ({totalGlosas > 0 ? ((glosasPorSemaforo.negro / totalGlosas) * 100).toFixed(0) : 0}%)</span>
               </div>
             </div>
           </CardContent>
@@ -119,15 +141,15 @@ export default function DashboardPage() {
           <CardContent className="space-y-2">
             <div className="flex items-center justify-between p-3 border rounded-md">
               <div>
-                <p className="font-medium">151 glosas críticas</p>
+                <p className="font-medium">{glosasCriticas} glosas críticas</p>
                 <p className="text-sm text-muted-foreground">Requieren atención inmediata</p>
               </div>
               <AlertCircle className="h-5 w-5 text-destructive" />
             </div>
             <div className="flex items-center justify-between p-3 border rounded-md">
               <div>
-                <p className="font-medium">Sistema de validación</p>
-                <p className="text-sm text-muted-foreground">Listo para usar</p>
+                <p className="font-medium">{totalGlosas} glosas totales</p>
+                <p className="text-sm text-muted-foreground">En el sistema</p>
               </div>
               <FileText className="h-5 w-5" />
             </div>
