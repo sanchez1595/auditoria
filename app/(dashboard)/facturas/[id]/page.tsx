@@ -2,7 +2,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { ArrowLeft, FileText, Calendar, DollarSign } from "lucide-react"
+import { ArrowLeft, FileText, Calendar, DollarSign, Upload } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -85,9 +85,17 @@ export default async function DetalleFacturaPage({ params }: { params: { id: str
             Detalles de la radicación
           </p>
         </div>
-        <Badge variant={getEstadoBadge(factura.estado) as any} className="text-sm">
-          {factura.estado.replace('_', ' ')}
-        </Badge>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link href={`/facturas/${params.id}/documentos`}>
+              <Upload className="h-4 w-4 mr-2" />
+              Gestionar Documentos
+            </Link>
+          </Button>
+          <Badge variant={getEstadoBadge(factura.estado) as any} className="text-sm">
+            {factura.estado.replace('_', ' ')}
+          </Badge>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
