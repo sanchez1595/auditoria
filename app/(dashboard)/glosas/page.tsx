@@ -9,7 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Plus, AlertCircle, Clock } from "lucide-react"
+import { Plus, AlertCircle, Clock, FileSpreadsheet } from "lucide-react"
 import { createClient } from "@/lib/supabase/server"
 import Link from "next/link"
 
@@ -78,12 +78,20 @@ export default async function GlosasPage() {
             Administra y da seguimiento a todas las glosas del sistema
           </p>
         </div>
-        <Button asChild>
-          <Link href="/glosas/nueva">
-            <Plus className="h-4 w-4 mr-2" />
-            Nueva Glosa
-          </Link>
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" asChild>
+            <Link href="/glosas/importar">
+              <FileSpreadsheet className="h-4 w-4 mr-2" />
+              Importar Excel
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link href="/glosas/nueva">
+              <Plus className="h-4 w-4 mr-2" />
+              Nueva Glosa
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Estadísticas rápidas */}
